@@ -230,6 +230,7 @@ int main()
         move = rand() % BOARD_SIZE;
         board[move] = current;
     }
+    current = 'R';
     init_board(board);
     while(1){
         if(current == 'R'){
