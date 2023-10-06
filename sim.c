@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "test.h"
 
-#define BOARD_SIZE(15)
+#define BOARD_SIZE (15)
 /*
  * The status of a line.
  */
