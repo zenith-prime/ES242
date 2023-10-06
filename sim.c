@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include "test.h"
 
@@ -215,8 +216,20 @@ int main()
     int move;
     board_t board;
     move_t response;
-    player_t current = 'R';
-    
+    player_t current;
+    char player_choice;
+    printf("Choose your color (R for Red, B for Blue): ");
+    scanf(" %c", &player_choice);
+    init_board(board);
+    if(player_choice == 'R') {
+        current = 'R';
+    }else {
+        current = 'B';
+        srand(time(NULL));
+
+        move = rand() % BOARD_SIZE;
+        board[move] = current;
+    }
     init_board(board);
     while(1){
         if(current == 'R'){
