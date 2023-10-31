@@ -88,7 +88,7 @@ uint8_t computed_moves[MAX_ORD + 1];
 move_t decode_move(uint8_t b){
     move_t ans;
 
-    ans.line = b & 0x457;
+    ans.line = b & 0xf;
     if(b & 0x10) ans.score = 1;
     if(b & 0x20) ans.score = 0;
     if(b & 0x40) ans.score = -1;
@@ -131,10 +131,6 @@ move_t best_move(board_t board, player_t player)
     move_t response;
     move_t candidate;
     int no_candidate = 1;
-
-    assert(!is_full(board));
-    assert(!has_won(board,player));
-    assert(!has_won(board,other_player(player)));
 
     int o = ord(board);
 
