@@ -101,6 +101,18 @@ int isFull(board_t board) {
     return 1; // All cells are filled, it's a draw
 }
 
+int isEmpty(board_t board) {
+    int c=0;
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            if (board[i][j] == EMPTY) {
+                c++; // There's an empty cell, not full
+            }
+        }
+    }
+    return c; // All cells are filled, it's a draw
+}
+
 int columnFull(board_t board, int col)
 {
     return board[0][col] != EMPTY;
@@ -199,7 +211,7 @@ int main()
     move_t response;
 
     int x;
-    printf("Do you choose to be Player 1 or Player 2: ");
+    printf("Do you choose to be Player 1 (red) or Player 2 (blue): ");
     scanf("%d", &x);
     player_t human, computer;
 
@@ -215,11 +227,21 @@ int main()
     }
 
     init_board(board);
+    if(computer==RED) {
+        while (1) {
+            human=BLUE;
+            response = best_move(board, computer);
+            col = response.col;
+            if (col >= 0 && col < 5 && !columnFull(board, col)) {
+                token_gravity(board, col, computer);
+            }
+            if (has_won(board, RED)) {
+                printBoard(board);
+                printf("Player 1 (red) has won!\n");
+                break;
+            }
+            printBoard(board);
 
-    while (1) {
-        printBoard(board);
-
-        if (human == RED) {
             print_key();
             printf("\nEnter your move (0-4): ");
             scanf("%d", &move);
@@ -230,34 +252,64 @@ int main()
             } else {
                 printf("Invalid move. Try again.\n");
                 continue;
+
             }
-        }
-        else {
 
-            response = best_move(board, computer);
-            col = response.col;
 
-            if (col >= 0 && col < 5 && !columnFull(board, col)) {
-                int row = token_gravity(board, col, human);
+            if (has_won(board, human)) {
+                printBoard(board);
+                printf("Player 2 (blue) has won!\n");
+                break;
+            } else if (isFull(board)) {
+                printf("It's a draw!\n");
+                break;
             }
+
+            human = other_player(human);
         }
-
-
-
-        if (has_won(board, human)) {
+    }
+    else {
+        while (1) {
             printBoard(board);
-            printf("Player 2 has won!\n");
-            break;
-        } else if (has_won(board, computer)) {
-            printBoard(board);
-            printf("Player 1 has won!\n");
-            break;
-        } else if (isFull(board)) {
-            printf("It's a draw!\n");
-            break;
+
+            if (human == RED) {
+                print_key();
+                printf("\nEnter your move (0-4): ");
+                scanf("%d", &move);
+                col = move;
+
+                if (col >= 0 && col < 5 && !columnFull(board, col)) {
+                    token_gravity(board, col, human);
+                } else {
+                    printf("Invalid move. Try again.\n");
+                    continue;
+                }
+            } else {
+
+                response = best_move(board, computer);
+                col = response.col;
+
+                if (col >= 0 && col < 5 && !columnFull(board, col)) {
+                    int row = token_gravity(board, col, human);
+                }
+            }
+
+
+            if (has_won(board, human)) {
+                printBoard(board);
+                printf("Player 2 (blue) has won!\n");
+                break;
+            } else if (has_won(board, computer)) {
+                printBoard(board);
+                printf("Player 1 (red) has won!\n");
+                break;
+            } else if (isFull(board)) {
+                printf("It's a draw!\n");
+                break;
+            }
+
+            human = other_player(human);
         }
-
-        human = other_player(human);
     }
     return 0;
 }
